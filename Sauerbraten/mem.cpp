@@ -1,6 +1,6 @@
 #include "mem.h"
 
-uintptr_t* FindFinalAdress(std::uintptr_t baseAddress, const std::uintptr_t offsets[], size_t size) {
+uintptr_t* FindDMAAddy(std::uintptr_t baseAddress, const std::vector<std::uintptr_t> offsets, const size_t size) {
 	std::uintptr_t temp = *reinterpret_cast<std::uintptr_t*>(baseAddress + offsets[0]);
 	std::uintptr_t* finalPtr = nullptr;
 
@@ -8,7 +8,9 @@ uintptr_t* FindFinalAdress(std::uintptr_t baseAddress, const std::uintptr_t offs
 		if (i == size-1) {
 			finalPtr = reinterpret_cast<std::uintptr_t*>(temp + offsets[i]);
 		}
-		temp = *reinterpret_cast<std::uintptr_t*>(temp + offsets[i]);
+		else {
+			temp = *reinterpret_cast<std::uintptr_t*>(temp + offsets[i]);
+		}
 	}
 
 	return finalPtr;

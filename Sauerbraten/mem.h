@@ -1,4 +1,4 @@
 #pragma once
 #include <vector>
 
-uintptr_t* FindFinalAdress(std::uintptr_t baseAddress, const std::uintptr_t offsets[], size_t size);
+uintptr_t* FindDMAAddy(std::uintptr_t baseAddress, const std::vector<std::uintptr_t> offsets, const size_t size);
