@@ -128,11 +128,19 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="aimbot.cpp" />
+    <ClCompile Include="entity.cpp" />
+    <ClCompile Include="entitylist.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="mem.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="aimbot.h" />
+    <ClInclude Include="entity.h" />
+    <ClInclude Include="entitylist.h" />
     <ClInclude Include="mem.h" />
+    <ClInclude Include="offsets.h" />
+    <ClInclude Include="vector.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

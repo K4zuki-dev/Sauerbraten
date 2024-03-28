@@ -1,4 +1,5 @@
 #pragma once
 #include <vector>
 
-uintptr_t* FindDMAAddy(std::uintptr_t baseAddress, const std::vector<std::uintptr_t> offsets, const size_t size);
+// Gives you back the final address of the thing you are looking for, cast it to a pointer and dereference it to actually get the value the address holds
+uintptr_t FindDMAAddy(std::uintptr_t baseAddress, std::vector<std::ptrdiff_t> offsets);

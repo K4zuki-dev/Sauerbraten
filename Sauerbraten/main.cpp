@@ -1,17 +1,14 @@
 #include <Windows.h>
 #include <thread>
-#include <iostream>
+#include <stdio.h>
+#include <vector>
+#include <cstdint>
 #include "mem.h"
-
-namespace offsets {
-	// Localplayer, all others ar build on it
-	const std::vector<uintptr_t> LocalPlayer = { 0x00312930, 0x0, 0x118 };
-
-	const std::uintptr_t Health = 0x340;
-	const std::uintptr_t Armor = 0x348;
-
-	const std::uintptr_t applyDmg = 0;
-}
+#include "vector.h"
+#include "aimbot.h"
+#include "offsets.h"
+#include "entity.h"
+#include "entitylist.h"
 
 static void HackThread(HMODULE instance) {
 	AllocConsole();
@@ -20,21 +17,34 @@ static void HackThread(HMODULE instance) {
 
 	printf("Cheat injected successfully!\n\n");
 
-	std::uintptr_t client = reinterpret_cast<uintptr_t>(GetModuleHandleA("sauerbraten.exe"));
-	std::uintptr_t* LocalPlayerPtr = reinterpret_cast<uintptr_t*>(FindDMAAddy(client, offsets::LocalPlayer, offsets::LocalPlayer.size()));
+	std::uintptr_t process = reinterpret_cast<std::uintptr_t>(GetModuleHandleA("sauerbraten.exe"));
+	std::uintptr_t localPlayerAddr = FindDMAAddy(process, offsets::LocalPlayer);
+
+	std::uintptr_t* yawPtr = reinterpret_cast<std::uintptr_t*>(FindDMAAddy(process, offsets::yaw));
+	std::uintptr_t* pitchPtr = reinterpret_cast<std::uintptr_t*>(FindDMAAddy(process, offsets::pitch));
 
 	while (!GetAsyncKeyState(VK_END))
 	{
 		Sleep(1);
-		if (!*LocalPlayerPtr) {
+		if (!localPlayerAddr) {
+			printf("Not starting that shi\n");
+			localPlayerAddr = FindDMAAddy(process, offsets::LocalPlayer);
 			continue;
 		}
 
+		std::uintptr_t enemyAddr = getEntityAddresses(1)[0];
+
+		entity LocalPlayer(localPlayerAddr);
+		entity Enemy(enemyAddr);
+
 		// Change Health
-		*reinterpret_cast<int32_t*>(*LocalPlayerPtr + offsets::Health) = 69420;
-		*reinterpret_cast<int32_t*>(*LocalPlayerPtr + offsets::Armor) = 69420;
+		*reinterpret_cast<std::int64_t*>(LocalPlayer.getOffsetAddr(offsets::Health)) = 69420;
+		*reinterpret_cast<std::int64_t*>(LocalPlayer.getOffsetAddr(offsets::Armor)) = 69420;
 
+		Vector3 LocalPlayerPos = LocalPlayer.getPos();
+		Vector3 EnemyPos = Enemy.getPos();
 
+		overwriteAngles(yawPtr, pitchPtr, LocalPlayerPos, EnemyPos);
 	}
 
 
