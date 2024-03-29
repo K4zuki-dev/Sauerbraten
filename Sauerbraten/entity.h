@@ -1,15 +1,27 @@
 #include <cstdint>
 #include "vector.h"
 #include "offsets.h"
+#include "mem.h"
 #pragma once
 
-class entity {
+class Entity {
 public:
-	std::uintptr_t addr;
+	const std::uintptr_t addr;
 
-	entity(std::uintptr_t objAddr);
+	Entity(const std::uintptr_t objAddr);
 
-	std::uintptr_t getOffsetAddr(std::ptrdiff_t offset);
+	std::uintptr_t getOffsetAddr(const std::ptrdiff_t offset);
+	std::uintptr_t getOffsetAddr(const std::vector<std::ptrdiff_t> offset);
 
 	Vector3 getPos();
+
+	bool isAlive();
+
+	template<typename T>
+	void setOffsetValue(const std::ptrdiff_t offset, const T value) noexcept {
+		void* ptrToOffset = reinterpret_cast<void*>(this->getOffsetAddr(offset));
+		memcpy(ptrToOffset, &value, sizeof(T));
+	}
+
+	bool checkValidity();
 };

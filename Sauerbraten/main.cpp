@@ -31,20 +31,19 @@ static void HackThread(HMODULE instance) {
 			localPlayerAddr = FindDMAAddy(process, offsets::LocalPlayer);
 			continue;
 		}
+		
+		if (*reinterpret_cast<int*>(localPlayerAddr) != 0) {
+			continue;
+		}
 
-		std::uintptr_t enemyAddr = getEntityAddresses(1)[0];
-
-		entity LocalPlayer(localPlayerAddr);
-		entity Enemy(enemyAddr);
+		Entity LocalPlayer = localPlayerAddr;
+		Entity Enemy = getEntityAddresses(1)[0];
 
 		// Change Health
-		*reinterpret_cast<std::int64_t*>(LocalPlayer.getOffsetAddr(offsets::Health)) = 69420;
-		*reinterpret_cast<std::int64_t*>(LocalPlayer.getOffsetAddr(offsets::Armor)) = 69420;
+		LocalPlayer.setOffsetValue<std::uint64_t>(offsets::Health, 69420);
+		LocalPlayer.setOffsetValue<std::uint64_t>(offsets::Armor, 69420);
 
-		Vector3 LocalPlayerPos = LocalPlayer.getPos();
-		Vector3 EnemyPos = Enemy.getPos();
-
-		overwriteAngles(yawPtr, pitchPtr, LocalPlayerPos, EnemyPos);
+		aimAtSpecific(LocalPlayer, Enemy, yawPtr, pitchPtr);
 	}
 
 

@@ -30,7 +30,5 @@ std::vector<std::uintptr_t> getEntityAddresses(std::uint16_t ammount = getPlayer
 		}
 	}
 
-
-
 	return entities;
 }
